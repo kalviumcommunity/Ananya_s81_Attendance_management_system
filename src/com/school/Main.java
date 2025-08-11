@@ -1,27 +1,34 @@
+// Main.java
 package com.school;
+
+import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
 
-        Student[] students = new Student[2];
-        students[0] = new Student();
-        students[0].setDetails("Alice");
-        students[1] = new Student();
-        students[1].setDetails("Bob");
+        Student[] students = new Student[3];
+        for (int i = 0; i < students.length; i++) {
+            System.out.print("Enter name of student " + (i + 1) + ": ");
+            students[i] = new Student(sc.nextLine());
+        }
 
         for (Student s : students) {
             s.displayDetails();
-            System.out.println("-------------------");
+            System.out.println("----------------");
         }
+
         Course[] courses = new Course[2];
-        courses[0] = new Course();
-        courses[0].setDetails(101, "Java Programming");
-        courses[1] = new Course();
-        courses[1].setDetails(102, "Data Structures");
+        for (int i = 0; i < courses.length; i++) {
+            System.out.print("Enter name of course " + (i + 1) + ": ");
+            courses[i] = new Course(sc.nextLine());
+        }
 
         for (Course c : courses) {
             c.displayDetails();
-            System.out.println("-------------------");
+            System.out.println("----------------");
         }
+
+        sc.close();
     }
 }
