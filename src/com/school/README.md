@@ -45,6 +45,18 @@
 - Attendance logs now show detailed student and course information.
 - When saving students to file, we filter `schoolPeople` using `instanceof`.
 
+## Part 8: Flexible Attendance Management
+- Introduced `AttendanceService` to manage attendance records.  
+- **Overloaded `markAttendance` methods**:
+  - `markAttendance(Student student, Course course, String status)`  
+  - `markAttendance(int studentId, int courseId, String status, List<Student> allStudents, List<Course> allCourses)`  
+- **Overloaded `displayAttendanceLog` methods**:
+  - `displayAttendanceLog()` – all records  
+  - `displayAttendanceLog(Student student)` – by student  
+  - `displayAttendanceLog(Course course)` – by course  
+- Uses Java Streams for filtering and `FileStorageService` for saving attendance logs.  
+- Demonstrated interactive marking and displaying of attendance in `Main.java`.  
+
 ### How to Run
 1. Navigate to the project root directory.
 2. Compile: `javac src/com/school/*.java` (or list individual files including `AttendanceRecord.java`)
