@@ -20,7 +20,6 @@ public class Main {
 
         List<Student> students = new ArrayList<>();
         List<Course> courses = new ArrayList<>();
-        List<AttendanceRecord> attendanceLog = new ArrayList<>();
         List<Teacher> teachers = new ArrayList<>();
         List<Staff> staffMembers = new ArrayList<>();
 
@@ -72,39 +71,100 @@ public class Main {
             courses.add(new Course(id, name));
         }
 
-        System.out.print("\nEnter number of attendance records: ");
-        int recordCount = sc.nextInt();
-        sc.nextLine();
-        for (int i = 0; i < recordCount; i++) {
-            System.out.print("Enter student index (0 to " + (students.size() - 1) + "): ");
-            int index = sc.nextInt();
-            sc.nextLine();
-            System.out.print("Enter course index (0 to " + (courses.size() - 1) + "): ");
-            int courseIndex = sc.nextInt();
-            sc.nextLine();
-            System.out.print("Enter status (Present/Absent): ");
-            String status = sc.nextLine();
+        FileStorageService storageService = new FileStorageService("attendance_log.txt");
+        AttendanceService attendanceService = new AttendanceService(storageService);
 
-\            attendanceLog.add(new AttendanceRecord(students.get(index), courses.get(courseIndex), status));
+
+        System.out.println("\n=== Enter Attendance Records (Enter student ID 0 to stop) ===");
+
+while (true) {
+    int tempStudentId = -1;
+    int tempCourseId = -1;
+    String status = "";
+
+    // Get valid student ID
+    while (true) {
+        try {
+            System.out.print("\nEnter student ID (or 0 to stop): ");
+            tempStudentId = Integer.parseInt(sc.nextLine().trim());
+            break;
+        } catch (NumberFormatException e) {
+            System.out.println("Invalid input. Please enter a number.");
         }
+    }
+
+    if (tempStudentId == 0) break; // exit loop
+
+    // Get valid course ID
+    while (true) {
+        try {
+            System.out.print("Enter course ID: ");
+            tempCourseId = Integer.parseInt(sc.nextLine().trim());
+            break;
+        } catch (NumberFormatException e) {
+            System.out.println("Invalid input. Please enter a number.");
+        }
+    }
+
+    // Get status
+    while (true) {
+        System.out.print("Enter status (Present/Absent): ");
+        status = sc.nextLine().trim();
+        if (status.equalsIgnoreCase("Present") || status.equalsIgnoreCase("Absent")) {
+            break;
+        } else {
+            System.out.println("Invalid status. Enter 'Present' or 'Absent'.");
+        }
+    }
+
+    // Make final copies for lambda
+    final int studentId = tempStudentId;
+    final int courseId = tempCourseId;
+
+    // Lookup student and course
+    Student student = students.stream()
+            .filter(s -> s.getId() == studentId)
+            .findFirst()
+            .orElse(null);
+    Course course = courses.stream()
+            .filter(c -> c.getCourseId() == courseId)
+            .findFirst()
+            .orElse(null);
+
+    if (student != null && course != null) {
+        attendanceService.markAttendance(studentId, courseId, status, students, courses);
+    } else {
+        System.out.println("Student or Course not found for IDs: " + studentId + ", " + courseId);
+    }
+    System.out.print("Do you want to enter another record? (yes/no): ");
+    String choice = sc.nextLine().trim();
+    if (choice.equalsIgnoreCase("no")) {
+        break;
+    }
+}
+
 
         List<Person> schoolPeople = new ArrayList<>();
         schoolPeople.addAll(students);
         schoolPeople.addAll(teachers);
         schoolPeople.addAll(staffMembers);
-
         displaySchoolDirectory(schoolPeople);
 
         System.out.println("\n=== Attendance Records ===");
-        for (AttendanceRecord record : attendanceLog) {
-            record.displayRecord();
+        attendanceService.displayAttendanceLog();
+        if (!students.isEmpty()) {
+            attendanceService.displayAttendanceLog(students.get(0));
+        }
+        if (!courses.isEmpty()) {
+            attendanceService.displayAttendanceLog(courses.get(0));
         }
 
-        List<Student> studentsToSave = schoolPeople.stream()
-        .filter(p -> p instanceof Student)
-        .map(p -> (Student) p)
-        .collect(Collectors.toList());
+        attendanceService.saveAttendanceData();
 
+        List<Student> studentsToSave = schoolPeople.stream()
+                .filter(p -> p instanceof Student)
+                .map(p -> (Student) p)
+                .collect(Collectors.toList());
         FileStorageService.saveData(studentsToSave, "students.txt");
 
         sc.close();

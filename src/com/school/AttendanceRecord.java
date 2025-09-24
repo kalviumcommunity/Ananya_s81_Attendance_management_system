@@ -38,6 +38,15 @@ public class AttendanceRecord {
     }
 
     public String toDataString() {
-        return student.getId() + "," + course.getCourseId() + "," + status;
+        return student.getId() + "," + student.getName() + "," 
+                + course.getCourseId() + "," + course.getCourseName() + "," 
+                + status;
+    }
+
+    @Override
+    public String toString() {
+        return "Student: " + student.getName() + " (ID: " + student.getId() + ")"
+                + ", Course: " + course.getCourseName() + " (ID: " + course.getCourseId() + ")"
+                + ", Status: " + status;
     }
 }
