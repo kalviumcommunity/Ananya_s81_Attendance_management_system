@@ -1,10 +1,10 @@
 package com.school;
 
-class Teacher extends Person {
+public class Teacher extends Person implements Storable {
     private String subject;
 
-    public Teacher(String name, String subject) {
-        super(name);
+    public Teacher(int id, String name, String subject) {
+        super(id, name);
         this.subject = subject;
     }
 
@@ -12,5 +12,10 @@ class Teacher extends Person {
     public void displayDetails() {
         super.displayDetails();
         System.out.println("Subject: " + subject);
+    }
+
+    @Override
+    public String getStorageFormat() {
+        return getId() + "," + getName() + "," + subject;
     }
 }

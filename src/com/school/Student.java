@@ -1,24 +1,12 @@
 package com.school;
 
 public class Student extends Person {
-    private int id;  
-    private String name;
     private String gradeLevel;
 
     public Student(int id, String name, String gradeLevel) {
-        super(name); 
-        this.id = id;
-        this.name = name;
+        super(id, name); // Calls Person constructor
         this.gradeLevel = gradeLevel;
     }
-
-    public int getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }   
 
     public String getGradeLevel() {
         return gradeLevel;
@@ -27,12 +15,12 @@ public class Student extends Person {
     @Override
     public void displayDetails() {
         super.displayDetails();
-        System.out.println("Student ID: " + id);
+        System.out.println("Student ID: " + getId()); 
         System.out.println("Grade Level: " + gradeLevel);
         System.out.println("Role: Student");
     }
 
     public String toDataString() {
-        return id + "," + getName() + "," + gradeLevel;
+        return getId() + "," + getName() + "," + gradeLevel;
     }
 }

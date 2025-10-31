@@ -4,25 +4,21 @@ public class Course {
     private int courseId;
     private String courseName;
 
-    public Course(int courseId, String courseName) {
-        this.courseId = courseId;
-        this.courseName = courseName;
+    public Course(int id, String name) {
+        this.courseId = id;
+        this.courseName = name;
     }
 
-    public int getCourseId() {
-        return courseId;
-    }
+    public int getCourseId() { return courseId; }
+    public String getCourseName() { return courseName; }
 
-    public String getCourseName() {
-        return courseName;
-    }
-
-    public void displayCourse() {
+    public void displayDetails() {
         System.out.println("Course ID: " + courseId);
         System.out.println("Course Name: " + courseName);
     }
 
-    public String toDataString() {
+    @Override
+    public String toString() {
         return courseId + "," + courseName;
     }
 }
