@@ -1,2 +1,0 @@
-com.school.AttendanceRecord@61bbe9ba
-Student: am (ID: 123), Course: aslkm (ID: 1234), Status: present

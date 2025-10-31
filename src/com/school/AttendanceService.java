@@ -5,55 +5,39 @@ import java.util.List;
 
 public class AttendanceService {
 
-    private List<AttendanceRecord> attendanceLog;
-    private FileStorageService storageService;
+    private final RegistrationService registrationService;
+    private final FileStorageService FileStorageService;
+    private final List<AttendanceRecord> attendanceLog;
 
-    // Constructor
-    public AttendanceService(FileStorageService storageService) {
+    public AttendanceService(RegistrationService registrationService, FileStorageService storageService) {
+        this.registrationService = registrationService;
+        this.FileStorageService = storageService;
         this.attendanceLog = new ArrayList<>();
-        this.storageService = storageService;
     }
 
-    public void markAttendance(Student student, Course course, String status) {
-        AttendanceRecord record = new AttendanceRecord(student, course, status);
-        attendanceLog.add(record);
-        System.out.println("Attendance marked for " + student.getName() + " in " + course.getCourseName());
-    }
 
-    public void markAttendance(int studentId, int courseId, String status, List<Student> allStudents, List<Course> allCourses) {
-        Student student = findStudentById(studentId, allStudents);
-        Course course = findCourseById(courseId, allCourses);
+    public void markAttendance(int studentId, int courseId, String status) {
+        Student student = registrationService.findStudentById(studentId);
+        Course course = registrationService.findCourseById(courseId);
 
         if (student != null && course != null) {
-            markAttendance(student, course, status);
+            AttendanceRecord record = new AttendanceRecord(student, course, status);
+            attendanceLog.add(record);
+            System.out.println("✅ Attendance marked for " + student.getName() + " in " + course.getCourseName());
         } else {
-            System.out.println("Student or Course not found for IDs: " + studentId + ", " + courseId);
+            System.out.println("❌ Student or Course not found for IDs: " + studentId + ", " + courseId);
         }
-    }
-
-    private Student findStudentById(int id, List<Student> allStudents) {
-        for (Student s : allStudents) {
-            if (s.getId() == id) return s;
-        }
-        return null;
-    }
-
-    private Course findCourseById(int id, List<Course> allCourses) {
-        for (Course c : allCourses) {
-            if (c.getCourseId() == id) return c;
-        }
-        return null;
     }
 
     public void displayAttendanceLog() {
-        System.out.println("Full Attendance Log:");
+        System.out.println("\n📋 Full Attendance Log:");
         for (AttendanceRecord record : attendanceLog) {
             System.out.println(record);
         }
     }
 
     public void displayAttendanceLog(Student student) {
-        System.out.println("Attendance Log for Student: " + student.getName());
+        System.out.println("\n📋 Attendance Log for Student: " + student.getName());
         for (AttendanceRecord record : attendanceLog) {
             if (record.getStudent().equals(student)) {
                 System.out.println(record);
@@ -62,7 +46,7 @@ public class AttendanceService {
     }
 
     public void displayAttendanceLog(Course course) {
-        System.out.println("Attendance Log for Course: " + course.getCourseName());
+        System.out.println("\n📋 Attendance Log for Course: " + course.getCourseName());
         for (AttendanceRecord record : attendanceLog) {
             if (record.getCourse().equals(course)) {
                 System.out.println(record);
@@ -71,7 +55,7 @@ public class AttendanceService {
     }
 
     public void saveAttendanceData() {
-        storageService.saveData(attendanceLog);
-        System.out.println("Attendance data saved.");
+        FileStorageService.saveData(attendanceLog, "attendance_log.txt");
+        System.out.println("💾 Attendance data saved successfully.");
     }
 }

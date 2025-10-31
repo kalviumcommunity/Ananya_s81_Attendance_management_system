@@ -1,17 +1,20 @@
-package  com.school;
+package com.school;
 
-public class Person {
-    private static int nextIdCounter = 1;
-    protected int id;
-    protected String name;
+public abstract class Person {
+    private int id;
+    private String name;
 
-    public Person(String name) {
-        this.id = nextIdCounter++;
+    public Person(int id, String name) {
+        this.id = id;
         this.name = name;
     }
 
     public int getId() {
         return id;
+    }
+
+    public String getName() {
+        return name;
     }
 
     public void displayDetails() {
